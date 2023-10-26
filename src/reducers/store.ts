@@ -1,20 +1,27 @@
-import { Action, ThunkAction, configureStore } from "@reduxjs/toolkit";
-// import notificationReducer from "./notificationReducer";
-// import blogReducer from "./blogReducer";
+import {
+  Action,
+  ThunkAction,
+  combineReducers,
+  configureStore,
+} from "@reduxjs/toolkit";
+import notificationReducer from "./notificationReducer";
+import blogReducer from "./blogReducer";
 import usersReducer from "./usersReducer";
 import { createWrapper } from "next-redux-wrapper";
 
-const makeStore = () => configureStore({
-    reducer: {
-    // notification: notificationReducer,
-    // blogs: blogReducer,
-        [usersReducer.name]: usersReducer,
-    },
-    devTools: true,
+const rootReducer = combineReducers({
+  notification: notificationReducer,
+  blogs: blogReducer,
+  users: usersReducer,
 });
 
-export type AppStore = ReturnType<typeof makeStore>;
-export type AppState = ReturnType<AppStore["getState"]>;
+const store = configureStore({
+  reducer: rootReducer,
+});
+
+export type AppState = ReturnType<typeof store.getState>;
+export type AppDispatch = typeof store.dispatch;
+
 export type AppThunk<ReturnType = void> = ThunkAction<
   ReturnType,
   AppState,
@@ -22,4 +29,4 @@ export type AppThunk<ReturnType = void> = ThunkAction<
   Action
 >;
 
-export const wrapper = createWrapper<AppStore>(makeStore);
+export const wrapper = createWrapper<typeof store>(() => store);

@@ -11,79 +11,79 @@ interface UsersState {
 }
 
 const initialState: UsersState = {
-    me: null,
-    all: [],
+  me: null,
+  all: [],
 };
 
 const usersSlice = createSlice({
-    name: "users",
-    initialState,
-    reducers: {
-        set(state, action) {
-            return ({ ...state, me: action.payload });
-        },
-        setAll(state, action) {
-            return ({ ...state, all: action.payload });
-        }
+  name: "users",
+  initialState,
+  reducers: {
+    set(state, action) {
+      return ({ ...state, me: action.payload });
     },
-    // extraReducers: {
-    //     [HYDRATE]: (state, action) => {
-    //         return {
-    //             ...state,
-    //             ...action.payload.auth,
-    //         };
-    //     },
-    // }
+    setAll(state, action) {
+      return ({ ...state, all: action.payload });
+    }
+  },
+  extraReducers: {
+    [HYDRATE]: (state, action) => {
+      return {
+        ...state,
+        ...action.payload,
+      };
+    },
+  }
 });
 
 const { set, setAll } = usersSlice.actions;
 
 export const loginUser = (credentials, redirect) => {
-    return async (dispatch) => {
-        try {
-            window.localStorage.removeItem("blogUser");
-            dispatch(set(""));
+  return async (dispatch) => {
+    try {
+      window.localStorage.removeItem("blogUser");
+      dispatch(set(""));
 
-            const user = await loginService.login(credentials);
-            window.localStorage.setItem("blogUser", JSON.stringify(user));
-            dispatch(set(user));
-            redirect();
-        } catch(e) {
-            dispatch(onError("wrong credentials"));
-        }
+      const user = await loginService.login(credentials);
+      window.localStorage.setItem("blogUser", JSON.stringify(user));
+      dispatch(set(user));
+      redirect();
+    } catch(e) {
+      dispatch(onError("wrong credentials"));
+    }
 
-    };
+  };
 };
 
 export const autoLoginUser = () => {
-    return async (dispatch) => {
-        const json = window.localStorage.getItem("blogUser");
-        if (json) {
-            dispatch(set(JSON.parse(json)));
-        }
-    };
+  return async (dispatch) => {
+    const json = window.localStorage.getItem("blogUser");
+    if (json) {
+      dispatch(set(JSON.parse(json)));
+    }
+  };
 };
 
 export const resetUser = () => {
-    return async (dispatch) => {
-        window.localStorage.removeItem("blogUser");
-        dispatch(set(""));
-    };
+  return async (dispatch) => {
+    window.localStorage.removeItem("blogUser");
+    dispatch(set(""));
+  };
 };
 
 export const registerUser = ({ username, name, password }) => {
-    return async (dispatch) => {
-        await registerService.register({ username, name, password });
-        const user = await loginService.login({ username, password });
-        dispatch(set(user));
-    };
+  return async (dispatch) => {
+    await registerService.register({ username, name, password });
+    const user = await loginService.login({ username, password });
+    dispatch(set(user));
+  };
 };
 
 export const initializeUsers = () => {
-    return async (dispatch) => {
-        const users = await userService.getAll();
-        dispatch(setAll(users));
-    };
+  return async (dispatch) => {
+    const users = await userService.getAll();
+    dispatch(setAll(users));
+  };
 };
 
 export default usersSlice.reducer;
