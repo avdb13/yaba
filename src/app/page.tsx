@@ -2,8 +2,6 @@ import Link from "next/link";
 import { useAppSelector as useSelector, useAppDispatch as useDispatch } from "./hooks";
 
 const App = () => {
-  const dispatch = useDispatch();
-
   const blogs = useSelector((state) => state.blogs);
   const users = useSelector((state) => state.users.all);
   const user = useSelector((state) => state.users.me);

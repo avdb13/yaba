@@ -1,5 +1,3 @@
-export {};
-
 declare global {
   interface Blog {
     id: string,
@@ -12,6 +10,7 @@ declare global {
   }
 
   interface Comment {
+    id: string,
     body: string,
     added: Date,
     author: User | null,
@@ -23,8 +22,16 @@ declare global {
     blogs: Blog[],
   }
 
+  interface AuthResp {
+    username: string,
+    name: string,
+    token: string,
+  }
+
   interface Notification {
     type: "error" | "warning" | "message",
     content: string,
   }
 }
+
+export {};

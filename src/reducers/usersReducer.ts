@@ -6,8 +6,8 @@ import { onError } from "./errorHandler";
 import { HYDRATE } from "next-redux-wrapper";
 
 interface UsersState {
-  me: string | null;
-  all: string[];
+  me: AuthResp | null;
+  all: User[];
 }
 
 const initialState: UsersState = {

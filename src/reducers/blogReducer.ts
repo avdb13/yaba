@@ -1,8 +1,9 @@
 import { onSuccess, onError } from "./errorHandler";
-import blogService from "../services/blogs";
+// import blogService from "../services/blogs";
+import { PayloadAction } from "@reduxjs/toolkit";
 import { resetUser } from "./usersReducer";
 import { createSlice } from "@reduxjs/toolkit";
-import {AppThunk } from "./store";
+import { AppThunk } from "./store";
 
 type BlogState = Blog[];
 
@@ -12,23 +13,24 @@ const blogSlice = createSlice({
   name: "blog",
   initialState,
   reducers: {
-    set(state, action) {
+    set(state, action: PayloadAction<Blog[]>) {
       return action.payload;
     },
-    append(state, action) {
+    append(state, action: PayloadAction<Blog>) {
       return [...state, action.payload];
     },
-    update(state, action) {
+    update(state, action: PayloadAction<Blog>) {
       return state.map((b) =>
         b.id === action.payload.id ? action.payload : b,
       );
     },
-    addComment(state, action) {
+    addComment(state, action: PayloadAction<Comment & { id: string }>) {
+      const {id, ...comment} = action.payload;
       return state.map((b) =>
-        b.id === action.payload.id ? ({ ...b, comments: [...b.comments, action.payload.comment] }) : b,
+        b.id === id ? ({ ...b, comments: [...b.comments, comment] }) : b,
       );
     },
-    remove(state, action) {
+    remove(state, action: PayloadAction<string>) {
       return state.filter((b) => b.id !== action.payload);
     },
   },
@@ -46,7 +48,8 @@ export const initializeBlogs = (): AppThunk => {
 
 export const createBlog = (blog: Blog): AppThunk => {
   return async (dispatch, getState) => {
-    const token = getState().users.me.token;
+    const me = getState().users.me;
+    const token = me ? me.token : null;
 
     try {
       const newBlog = await blogService.create(blog, token);
