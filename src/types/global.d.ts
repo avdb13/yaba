@@ -9,6 +9,8 @@ declare global {
     user: User,
   }
 
+  type BlogForm = Pick<Blog, "title" | "url" | "author">;
+
   interface Comment {
     id: string,
     body: string,

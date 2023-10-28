@@ -62,4 +62,4 @@ commentSchema.set("toJSON", {
   },
 });
 
-export default model("BlogSchema", blogSchema);
+export const BlogModel = model("Blog", blogSchema);
